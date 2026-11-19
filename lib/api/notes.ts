@@ -1,17 +1,6 @@
-import axios from 'axios';
-
 import type { Note, NoteTag } from '@/types/note';
 
-const API_URL = 'https://notehub-public.goit.study/api';
-
-const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
+import { api } from './client';
 
 export interface FetchNotesParams {
   page: number;
@@ -50,7 +39,7 @@ export const fetchNotes = async ({
   return response.data;
 };
 
-// Получение одной заметки по ID
+// Получение одной заметки
 export const fetchNoteById = async (id: string): Promise<Note> => {
   const response = await api.get<Note>(`/notes/${id}`);
 
