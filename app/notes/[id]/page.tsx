@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import {
   QueryClient,
   HydrationBoundary,
@@ -14,6 +16,45 @@ interface NoteDetailsPageProps {
   }>;
 }
 
+const BASE_URL = 'https://notehub.com';
+
+const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
+
+// SEO-метаданные отдельной заметки
+export async function generateMetadata({
+  params,
+}: NoteDetailsPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  const note = await fetchNoteById(id);
+
+  const title = `${note.title} | NoteHub`;
+
+  const description =
+    note.content.length > 160
+      ? `${note.content.slice(0, 157)}...`
+      : note.content || 'View and manage your note in NoteHub.';
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${BASE_URL}/notes/${id}`,
+      images: [
+        {
+          url: OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: `${note.title} - NoteHub`,
+        },
+      ],
+    },
+  };
+}
+
+// Серверный компонент страницы заметки
 export default async function NoteDetails({ params }: NoteDetailsPageProps) {
   const { id } = await params;
 
